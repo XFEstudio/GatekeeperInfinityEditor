@@ -20,9 +20,9 @@ internal static class Program
             {
                 SystemProfile.IsGameRunning = Process.GetProcessesByName("Gatekeeper Infinity").Length > 0;
                 if (SystemProfile.IsGameRunning)
-                    mainForm.Text = "Gatekeeper: Infinity 4项修改器[游戏进行中]";
+                    mainForm.Invoke(() => mainForm.Text = "Gatekeeper: Infinity 4项修改器[游戏进行中]");
                 else
-                    mainForm.Text = "Gatekeeper: Infinity 4项修改器[未启动游戏]";
+                    mainForm.Invoke(() => mainForm.Text = "Gatekeeper: Infinity 4项修改器[未启动游戏]");
                 await Task.Delay(500);
             }
         });
