@@ -164,6 +164,7 @@
             Controls.Add(textBox2);
             Controls.Add(textBox1);
             DoubleBuffered = true;
+            FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";
             Text = "Gatekeeper: Infinity 4项修改器[未启动游戏]";

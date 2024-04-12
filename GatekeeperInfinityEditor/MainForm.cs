@@ -36,14 +36,14 @@ public partial class MainForm : Form
                     {
                         healthBaseAddress = CurrentEditor!.ResolvePointerAddress("GameAssembly.dll", 0x03F5E2B0, 0xB8, 0x8, 0x20, 0x118, 0x120);
                     }
-                    CurrentEditor!.AddListener<float>(healthBaseAddress, "HP");
-                    CurrentEditor!.WriteMemory(healthBaseAddress, float.Parse(textBox1.Text));
+                    CurrentEditor?.AddListener<float>(healthBaseAddress, "HP");
+                    CurrentEditor?.WriteMemory(healthBaseAddress, float.Parse(textBox1.Text));
                 });
             }
             else
             {
                 textBox1.Enabled = true;
-                CurrentEditor!.RemoveListener(healthBaseAddress);
+                CurrentEditor?.RemoveListener(healthBaseAddress);
             }
         }
     }
@@ -68,14 +68,14 @@ public partial class MainForm : Form
                     {
                         attackBaseAddress = CurrentEditor!.ResolvePointerAddress("GameAssembly.dll", 0x03F5E2B0, 0xB8, 0x8, 0x20, 0x120, 0x120);
                     }
-                    CurrentEditor!.AddListener<float>(attackBaseAddress, "ATK");
-                    CurrentEditor!.WriteMemory(attackBaseAddress, float.Parse(textBox2.Text));
+                    CurrentEditor?.AddListener<float>(attackBaseAddress, "ATK");
+                    CurrentEditor?.WriteMemory(attackBaseAddress, float.Parse(textBox2.Text));
                 });
             }
             else
             {
                 textBox2.Enabled = true;
-                CurrentEditor!.RemoveListener(attackBaseAddress);
+                CurrentEditor?.RemoveListener(attackBaseAddress);
             }
         }
     }
@@ -100,14 +100,14 @@ public partial class MainForm : Form
                     {
                         yellowStoneBaseAddress = CurrentEditor!.ResolvePointerAddress("GameAssembly.dll", 0x03FE0750, 0xB8, 0x8, 0x18);
                     }
-                    CurrentEditor!.AddListener<int>(yellowStoneBaseAddress, "YellowStone");
-                    CurrentEditor!.WriteMemory(yellowStoneBaseAddress, int.Parse(textBox3.Text));
+                    CurrentEditor?.AddListener<int>(yellowStoneBaseAddress, "YellowStone");
+                    CurrentEditor?.WriteMemory(yellowStoneBaseAddress, int.Parse(textBox3.Text));
                 });
             }
             else
             {
                 textBox3.Enabled = true;
-                CurrentEditor!.RemoveListener(yellowStoneBaseAddress);
+                CurrentEditor?.RemoveListener(yellowStoneBaseAddress);
             }
         }
     }
@@ -132,14 +132,14 @@ public partial class MainForm : Form
                     {
                         blueStoneBaseAddress = CurrentEditor!.ResolvePointerAddress("GameAssembly.dll", 0x03FEE2B0, 0x50, 0xB8, 0x8, 0x148, 0x18);
                     }
-                    CurrentEditor!.AddListener<int>(blueStoneBaseAddress, "BlueStone");
-                    CurrentEditor!.WriteMemory(blueStoneBaseAddress, int.Parse(textBox4.Text));
+                    CurrentEditor?.AddListener<int>(blueStoneBaseAddress, "BlueStone");
+                    CurrentEditor?.WriteMemory(blueStoneBaseAddress, int.Parse(textBox4.Text));
                 });
             }
             else
             {
                 textBox4.Enabled = true;
-                CurrentEditor!.RemoveListener(blueStoneBaseAddress);
+                CurrentEditor?.RemoveListener(blueStoneBaseAddress);
             }
         }
     }
