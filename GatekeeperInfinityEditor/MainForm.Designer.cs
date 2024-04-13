@@ -43,6 +43,8 @@
             // 
             // textBox1
             // 
+            textBox1.BackColor = Color.FromArgb(64, 64, 64);
+            textBox1.ForeColor = Color.White;
             textBox1.Location = new Point(312, 105);
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(227, 30);
@@ -51,6 +53,8 @@
             // 
             // textBox2
             // 
+            textBox2.BackColor = Color.FromArgb(64, 64, 64);
+            textBox2.ForeColor = Color.White;
             textBox2.Location = new Point(312, 204);
             textBox2.Name = "textBox2";
             textBox2.Size = new Size(227, 30);
@@ -59,6 +63,8 @@
             // 
             // textBox3
             // 
+            textBox3.BackColor = Color.FromArgb(64, 64, 64);
+            textBox3.ForeColor = Color.White;
             textBox3.Location = new Point(312, 300);
             textBox3.Name = "textBox3";
             textBox3.Size = new Size(227, 30);
@@ -67,6 +73,8 @@
             // 
             // textBox4
             // 
+            textBox4.BackColor = Color.FromArgb(64, 64, 64);
+            textBox4.ForeColor = Color.White;
             textBox4.Location = new Point(312, 392);
             textBox4.Name = "textBox4";
             textBox4.Size = new Size(227, 30);

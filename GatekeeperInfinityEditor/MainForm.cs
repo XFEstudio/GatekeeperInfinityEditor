@@ -5,10 +5,10 @@ namespace GatekeeperInfinityEditor;
 
 public partial class MainForm : Form
 {
-    nint healthBaseAddress = 288;
-    nint attackBaseAddress = 288;
-    nint yellowStoneBaseAddress = 24;
-    nint blueStoneBaseAddress = 24;
+    nint healthBaseAddress = 0;
+    nint attackBaseAddress = 0;
+    nint yellowStoneBaseAddress = 0;
+    nint blueStoneBaseAddress = 0;
     public static MemoryEditor? CurrentEditor { get; set; }
     public MainForm()
     {
@@ -30,20 +30,14 @@ public partial class MainForm : Form
                     return;
                 }
                 textBox1.Enabled = false;
-                Task.Run(() =>
-                {
-                    while (healthBaseAddress == 288)
-                    {
-                        healthBaseAddress = CurrentEditor!.ResolvePointerAddress("GameAssembly.dll", 0x03F5E2B0, 0xB8, 0x8, 0x20, 0x118, 0x120);
-                    }
-                    CurrentEditor?.AddListener<float>(healthBaseAddress, "HP");
-                    CurrentEditor?.WriteMemory(healthBaseAddress, float.Parse(textBox1.Text));
-                });
+                CurrentEditor!.AddListener<float>(() => CurrentEditor?.ResolvePointerAddress("GameAssembly.dll", 0x03F5E2B0, 0xB8, 0x8, 0x20, 0x118, 0x120), 1, "HP");
+                healthBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03F5E2B0, 0xB8, 0x8, 0x20, 0x118, 0x120);
+                CurrentEditor.WriteMemory(healthBaseAddress, float.Parse(textBox1.Text));
             }
             else
             {
                 textBox1.Enabled = true;
-                CurrentEditor?.RemoveListener(healthBaseAddress);
+                CurrentEditor?.RemoveListener("HP");
             }
         }
     }
@@ -62,20 +56,14 @@ public partial class MainForm : Form
                     return;
                 }
                 textBox2.Enabled = false;
-                Task.Run(() =>
-                {
-                    while (attackBaseAddress == 288)
-                    {
-                        attackBaseAddress = CurrentEditor!.ResolvePointerAddress("GameAssembly.dll", 0x03F5E2B0, 0xB8, 0x8, 0x20, 0x120, 0x120);
-                    }
-                    CurrentEditor?.AddListener<float>(attackBaseAddress, "ATK");
-                    CurrentEditor?.WriteMemory(attackBaseAddress, float.Parse(textBox2.Text));
-                });
+                CurrentEditor!.AddListener<float>(() => CurrentEditor?.ResolvePointerAddress("GameAssembly.dll", 0x03F5E2B0, 0xB8, 0x8, 0x20, 0x120, 0x120), 1, "ATK");
+                attackBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03F5E2B0, 0xB8, 0x8, 0x20, 0x120, 0x120);
+                CurrentEditor.WriteMemory(attackBaseAddress, float.Parse(textBox2.Text));
             }
             else
             {
                 textBox2.Enabled = true;
-                CurrentEditor?.RemoveListener(attackBaseAddress);
+                CurrentEditor?.RemoveListener("ATK");
             }
         }
     }
@@ -94,20 +82,14 @@ public partial class MainForm : Form
                     return;
                 }
                 textBox3.Enabled = false;
-                Task.Run(() =>
-                {
-                    while (yellowStoneBaseAddress == 24)
-                    {
-                        yellowStoneBaseAddress = CurrentEditor!.ResolvePointerAddress("GameAssembly.dll", 0x03FE0750, 0xB8, 0x8, 0x18);
-                    }
-                    CurrentEditor?.AddListener<int>(yellowStoneBaseAddress, "YellowStone");
-                    CurrentEditor?.WriteMemory(yellowStoneBaseAddress, int.Parse(textBox3.Text));
-                });
+                CurrentEditor!.AddListener<int>(() => CurrentEditor?.ResolvePointerAddress("GameAssembly.dll", 0x03FE0750, 0xB8, 0x8, 0x18), 1, "YellowStone");
+                yellowStoneBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03FE0750, 0xB8, 0x8, 0x18);
+                CurrentEditor.WriteMemory(yellowStoneBaseAddress, int.Parse(textBox3.Text));
             }
             else
             {
                 textBox3.Enabled = true;
-                CurrentEditor?.RemoveListener(yellowStoneBaseAddress);
+                CurrentEditor?.RemoveListener("YellowStone");
             }
         }
     }
@@ -128,18 +110,15 @@ public partial class MainForm : Form
                 textBox4.Enabled = false;
                 Task.Run(() =>
                 {
-                    while (blueStoneBaseAddress == 24)
-                    {
-                        blueStoneBaseAddress = CurrentEditor!.ResolvePointerAddress("GameAssembly.dll", 0x03FEE2B0, 0x50, 0xB8, 0x8, 0x148, 0x18);
-                    }
-                    CurrentEditor?.AddListener<int>(blueStoneBaseAddress, "BlueStone");
-                    CurrentEditor?.WriteMemory(blueStoneBaseAddress, int.Parse(textBox4.Text));
+                    CurrentEditor!.AddListener<int>(() => CurrentEditor?.ResolvePointerAddress("GameAssembly.dll", 0x03FEE2B0, 0x50, 0xB8, 0x8, 0x148, 0x18), 1, "BlueStone");
+                    blueStoneBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03FEE2B0, 0x50, 0xB8, 0x8, 0x148, 0x18);
+                    CurrentEditor.WriteMemory(blueStoneBaseAddress, int.Parse(textBox4.Text));
                 });
             }
             else
             {
                 textBox4.Enabled = true;
-                CurrentEditor?.RemoveListener(blueStoneBaseAddress);
+                CurrentEditor?.RemoveListener("BlueStone");
             }
         }
     }
@@ -151,28 +130,45 @@ public partial class MainForm : Form
             CurrentEditor = new("Gatekeeper Infinity");
             healthBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03F5E2B0, 0xB8, 0x8, 0x20, 0x118, 0x120);
             attackBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03F5E2B0, 0xB8, 0x8, 0x20, 0x120, 0x120);
-            blueStoneBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03FEE2B0, 0x50, 0xB8, 0x8, 0x148, 0x18);
             yellowStoneBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03FE0750, 0xB8, 0x8, 0x18);
+            blueStoneBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03FEE2B0, 0x50, 0xB8, 0x8, 0x148, 0x18);
             CurrentEditor.ValueChanged += (sender, e) =>
             {
-                Trace.WriteLine($"名称：{e.CustomName} 地址：{sender:X}\t值从：{e.PreviousValue}  变更为：{e.CurrentValue}");
+                Trace.WriteLine($"名称：{e.CustomName} 地址：{sender:X}\t是否读取到值  上次：{e.PreviousValueGetSuccessful}  这次：{e.CurrentValueGetSuccessful}  值从：{e.PreviousValue}  变更为：{e.CurrentValue}");
                 switch (e.CustomName)
                 {
                     case "HP":
-                        CurrentEditor.WriteMemory(healthBaseAddress, float.Parse(textBox1.Text));
+                        if (e.CurrentValueGetSuccessful)
+                        {
+                            healthBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03F5E2B0, 0xB8, 0x8, 0x20, 0x118, 0x120);
+                            CurrentEditor.WriteMemory(healthBaseAddress, float.Parse(textBox1.Text));
+                        }
                         break;
                     case "ATK":
-                        CurrentEditor.WriteMemory(attackBaseAddress, float.Parse(textBox2.Text));
+                        if (e.CurrentValueGetSuccessful)
+                        {
+                            attackBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03F5E2B0, 0xB8, 0x8, 0x20, 0x120, 0x120);
+                            CurrentEditor.WriteMemory(attackBaseAddress, float.Parse(textBox2.Text));
+                        }
                         break;
                     case "YellowStone":
-                        CurrentEditor.WriteMemory(yellowStoneBaseAddress, int.Parse(textBox3.Text));
+                        if (e.CurrentValueGetSuccessful)
+                        {
+                            yellowStoneBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03FE0750, 0xB8, 0x8, 0x18);
+                            CurrentEditor.WriteMemory(yellowStoneBaseAddress, int.Parse(textBox3.Text));
+                        }
                         break;
                     case "BlueStone":
-                        CurrentEditor.WriteMemory(blueStoneBaseAddress, int.Parse(textBox4.Text));
+                        if (e.CurrentValueGetSuccessful)
+                        {
+                            blueStoneBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03FEE2B0, 0x50, 0xB8, 0x8, 0x148, 0x18);
+                            CurrentEditor.WriteMemory(blueStoneBaseAddress, int.Parse(textBox4.Text));
+                        }
                         break;
                     default:
                         break;
                 }
+                Trace.WriteLine(healthBaseAddress.ToString("X"));
             };
         }
     }
