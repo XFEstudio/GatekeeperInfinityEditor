@@ -1,176 +1,160 @@
 using System.Diagnostics;
-using XFEExtension.NetCore.MemoryEditor;
+using XFEExtension.NetCore.CodeExtension;
 
 namespace GatekeeperInfinityEditor;
 
 public partial class MainForm : Form
 {
-    nint healthBaseAddress = 0;
-    nint attackBaseAddress = 0;
-    nint yellowStoneBaseAddress = 0;
-    nint blueStoneBaseAddress = 0;
-    public static MemoryEditor? CurrentEditor { get; set; }
+    public static MainForm? Current { get; set; }
     public MainForm()
     {
         InitializeComponent();
-        CheckEditorInitialize();
+        Current = this;
+        Program.Manager.ValueChanged += Manger_ValueChanged;
     }
 
-    private void CheckBox1_CheckedChanged(object sender, EventArgs e)
+    private void Manger_ValueChanged(XFEExtension.NetCore.MemoryEditor.Manager.MemoryItem sender, XFEExtension.NetCore.MemoryEditor.MemoryValue e)
     {
-        CheckEditorInitialize();
+        Trace.WriteLine($"标识名：{e.CustomName} 上一次是否读到值：{e.PreviousValueGetSuccessful} 上一次的值：{e.PreviousValue} 这次是否读到值：{e.CurrentValueGetSuccessful} 这次的值：{e.CurrentValue}");
+        switch (e.CustomName)
+        {
+            case "MaxHealth":
+                if (e.CurrentValueGetSuccessful && checkBox1.Checked)
+                {
+                    if (!Program.Manager["MaxHealth"].Write(float.Parse(textBox1.Text)))
+                        Trace.WriteLine($"{e.CustomName} 写入失败");
+                }
+                break;
+            case "AttackDamage":
+                if (e.CurrentValueGetSuccessful && checkBox2.Checked)
+                {
+                    if (!Program.Manager["AttackDamage"].Write(float.Parse(textBox2.Text)))
+                        Trace.WriteLine($"{e.CustomName} 写入失败");
+                }
+                break;
+            case "YellowStone":
+                if (e.CurrentValueGetSuccessful && checkBox3.Checked)
+                {
+                    if (!Program.Manager["YellowStone"].Write(int.Parse(textBox3.Text)))
+                        Trace.WriteLine($"{e.CustomName} 写入失败");
+                }
+                break;
+            case "BlueStone":
+                if (e.CurrentValueGetSuccessful && checkBox4.Checked)
+                {
+                    if (!Program.Manager["BlueStone"].Write(int.Parse(textBox4.Text)))
+                        Trace.WriteLine($"{e.CustomName} 写入失败");
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private async void CheckBox1_CheckedChanged(object sender, EventArgs e)
+    {
         if (sender is CheckBox checkBox)
         {
             if (checkBox.Checked)
             {
-                if (!SystemProfile.IsGameRunning)
+                if (CheckGameStart())
                 {
-                    MessageBox.Show("请启动游戏");
-                    checkBox.Checked = false;
-                    return;
+                    textBox1.Enabled = false;
+                    await Task.Delay(5);
+                    Program.Manager["MaxHealth"].Write(float.Parse(textBox1.Text));
                 }
-                textBox1.Enabled = false;
-                CurrentEditor!.AddListener<float>(() => CurrentEditor?.ResolvePointerAddress("GameAssembly.dll", 0x03F5E2B0, 0xB8, 0x8, 0x20, 0x118, 0x120), 1, "HP");
-                healthBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03F5E2B0, 0xB8, 0x8, 0x20, 0x118, 0x120);
-                CurrentEditor.WriteMemory(healthBaseAddress, float.Parse(textBox1.Text));
+                else
+                {
+                    checkBox.Checked = false;
+                }
             }
             else
             {
                 textBox1.Enabled = true;
-                CurrentEditor?.RemoveListener("HP");
             }
         }
     }
 
-    private void CheckBox2_CheckedChanged(object sender, EventArgs e)
+    private async void CheckBox2_CheckedChanged(object sender, EventArgs e)
     {
-        CheckEditorInitialize();
         if (sender is CheckBox checkBox)
         {
             if (checkBox.Checked)
             {
-                if (!SystemProfile.IsGameRunning)
+                if (CheckGameStart())
                 {
-                    MessageBox.Show("请启动游戏");
-                    checkBox.Checked = false;
-                    return;
+                    textBox2.Enabled = false;
+                    await Task.Delay(5);
+                    Program.Manager["AttackDamage"].Write(float.Parse(textBox2.Text));
                 }
-                textBox2.Enabled = false;
-                CurrentEditor!.AddListener<float>(() => CurrentEditor?.ResolvePointerAddress("GameAssembly.dll", 0x03F5E2B0, 0xB8, 0x8, 0x20, 0x120, 0x120), 1, "ATK");
-                attackBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03F5E2B0, 0xB8, 0x8, 0x20, 0x120, 0x120);
-                CurrentEditor.WriteMemory(attackBaseAddress, float.Parse(textBox2.Text));
+                else
+                {
+                    checkBox.Checked = false;
+                }
             }
             else
             {
                 textBox2.Enabled = true;
-                CurrentEditor?.RemoveListener("ATK");
             }
         }
     }
 
-    private void CheckBox3_CheckedChanged(object sender, EventArgs e)
+    private async void CheckBox3_CheckedChanged(object sender, EventArgs e)
     {
-        CheckEditorInitialize();
         if (sender is CheckBox checkBox)
         {
             if (checkBox.Checked)
             {
-                if (!SystemProfile.IsGameRunning)
+                if (CheckGameStart())
                 {
-                    MessageBox.Show("请启动游戏");
-                    checkBox.Checked = false;
-                    return;
+                    textBox3.Enabled = false;
+                    await Task.Delay(5);
+                    Program.Manager["YellowStone"].Write(int.Parse(textBox3.Text));
                 }
-                textBox3.Enabled = false;
-                CurrentEditor!.AddListener<int>(() => CurrentEditor?.ResolvePointerAddress("GameAssembly.dll", 0x03FE0750, 0xB8, 0x8, 0x18), 1, "YellowStone");
-                yellowStoneBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03FE0750, 0xB8, 0x8, 0x18);
-                CurrentEditor.WriteMemory(yellowStoneBaseAddress, int.Parse(textBox3.Text));
+                else
+                {
+                    checkBox.Checked = false;
+                }
             }
             else
             {
                 textBox3.Enabled = true;
-                CurrentEditor?.RemoveListener("YellowStone");
             }
         }
     }
 
-    private void CheckBox4_CheckedChanged(object sender, EventArgs e)
+    private async void CheckBox4_CheckedChanged(object sender, EventArgs e)
     {
-        CheckEditorInitialize();
         if (sender is CheckBox checkBox)
         {
             if (checkBox.Checked)
             {
-                if (!SystemProfile.IsGameRunning)
+                if (CheckGameStart())
                 {
-                    MessageBox.Show("请启动游戏");
-                    checkBox.Checked = false;
-                    return;
+                    textBox4.Enabled = false;
+                    await Task.Delay(5);
+                    Program.Manager["BlueStone"].Write(int.Parse(textBox4.Text));
                 }
-                textBox4.Enabled = false;
-                Task.Run(() =>
+                else
                 {
-                    CurrentEditor!.AddListener<int>(() => CurrentEditor?.ResolvePointerAddress("GameAssembly.dll", 0x03FEE2B0, 0x50, 0xB8, 0x8, 0x148, 0x18), 1, "BlueStone");
-                    blueStoneBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03FEE2B0, 0x50, 0xB8, 0x8, 0x148, 0x18);
-                    CurrentEditor.WriteMemory(blueStoneBaseAddress, int.Parse(textBox4.Text));
-                });
+                    checkBox.Checked = false;
+                }
             }
             else
             {
                 textBox4.Enabled = true;
-                CurrentEditor?.RemoveListener("BlueStone");
             }
         }
     }
 
-    private void CheckEditorInitialize()
+    private static bool CheckGameStart()
     {
-        if (CurrentEditor is null && SystemProfile.IsGameRunning)
+        if (!SystemProfile.IsGameRunning)
         {
-            CurrentEditor = new("Gatekeeper Infinity");
-            healthBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03F5E2B0, 0xB8, 0x8, 0x20, 0x118, 0x120);
-            attackBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03F5E2B0, 0xB8, 0x8, 0x20, 0x120, 0x120);
-            yellowStoneBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03FE0750, 0xB8, 0x8, 0x18);
-            blueStoneBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03FEE2B0, 0x50, 0xB8, 0x8, 0x148, 0x18);
-            CurrentEditor.ValueChanged += (sender, e) =>
-            {
-                Trace.WriteLine($"名称：{e.CustomName} 地址：{sender:X}\t是否读取到值  上次：{e.PreviousValueGetSuccessful}  这次：{e.CurrentValueGetSuccessful}  值从：{e.PreviousValue}  变更为：{e.CurrentValue}");
-                switch (e.CustomName)
-                {
-                    case "HP":
-                        if (e.CurrentValueGetSuccessful)
-                        {
-                            healthBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03F5E2B0, 0xB8, 0x8, 0x20, 0x118, 0x120);
-                            CurrentEditor.WriteMemory(healthBaseAddress, float.Parse(textBox1.Text));
-                        }
-                        break;
-                    case "ATK":
-                        if (e.CurrentValueGetSuccessful)
-                        {
-                            attackBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03F5E2B0, 0xB8, 0x8, 0x20, 0x120, 0x120);
-                            CurrentEditor.WriteMemory(attackBaseAddress, float.Parse(textBox2.Text));
-                        }
-                        break;
-                    case "YellowStone":
-                        if (e.CurrentValueGetSuccessful)
-                        {
-                            yellowStoneBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03FE0750, 0xB8, 0x8, 0x18);
-                            CurrentEditor.WriteMemory(yellowStoneBaseAddress, int.Parse(textBox3.Text));
-                        }
-                        break;
-                    case "BlueStone":
-                        if (e.CurrentValueGetSuccessful)
-                        {
-                            blueStoneBaseAddress = CurrentEditor.ResolvePointerAddress("GameAssembly.dll", 0x03FEE2B0, 0x50, 0xB8, 0x8, 0x148, 0x18);
-                            CurrentEditor.WriteMemory(blueStoneBaseAddress, int.Parse(textBox4.Text));
-                        }
-                        break;
-                    default:
-                        break;
-                }
-                Trace.WriteLine(healthBaseAddress.ToString("X"));
-            };
+            MessageBox.Show("请启动游戏");
+            return false;
         }
+        return true;
     }
 
     public void RemoveAllCheck()
